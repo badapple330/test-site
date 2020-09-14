@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <title>Number guessing game</title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Number guessing game</h1>
+
+    <p>We have selected a random number between 1 and 100. See if you can guess it in 10 turns or fewer. We'll tell you if your guess was too high or too low.</p>
+
+    <div class="form">
+      <label for="guessField">Enter a guess: </label>
+      <input type="text" id="guessField" class="guessField">
+      <input type="submit" value="Submit guess" class="guessSubmit">
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random()*100) + 1;
+        const guesses = document.querySelector(".guesses");
+        const lastResult = document.querySelector(".lastResult");
+        const lowOrHi = document.querySelector(".lowOrHi");
+
+        const guessSubmit = document.querySelector(".guessSubmit");
+        const guessField = document.querySelector(".guessField");
+        //constant 定数
+        //.querySelector() take a CSS selector that selects the element you want a reference to.
+
+        let guessCount = 1;
+        let resetButton;
+        guessField.focus();
+        //automatically put the text cursor into the <input> text field as soon as the page loads
+
+        function checkGuess(){
+            let userGuess = Number(guessField.value);
+            if (guessCount === 1){
+                guesses.textContent = "Previous guesses";
+            }
+            guesses.textContent += userGuess + " ";
+
+            if (userGuess === randomNumber) {
+                lastResult.textContent = "Congratulations! You got it rihgt!";
+                lastResult.style.backgroundColor = "green";
+                lowOrHi.textContent = "";
+                setGameOver();
+            }else if(guessCount === 10) {
+                lastResult.textContent = "!!!GAME OVER!!!";
+                setGameOver();
+            }else{
+                lastResult.textConten = "Wrong!";
+                lastResult.style.backgroundColor = "red";
+                if (userGuess < randomNumber){
+                    lowOrHi.textContent = "Last Guess was low";
+                }else if(userGuess > randomNumber) {
+                    lowOrHi.textContent = "Last Guess was high";
+                }
+            }
+
+            guessCount++;
+            guessField.value = "";
+            guessField.focus();
+            //foucs() ってなんや。フォーム欄をクリックした状態にするみたい。
+            //検索欄をクリックすると縦線が発生して点滅するだろ。その状態になる
+        }
+
+        guessSubmit.addEventListener("click", checkGuess);
+
+        function setGameOver() {
+          guessField.disabled = true;
+          guessSubmit.disabled = true;
+          resetButton = document.createElement("button");
+          resetButton.textContent = "Start new game";
+          document.body.append(resetButton);
+          resetButton.addEventListener("click", resetGame);
+        }
+
+        function resetGame(){
+          guessCount = 1;
+
+          const resetParas = document.querySelectorAll(".resultParas p")
+          for (let i = 0 ; i < resetParas.length ; i++){
+            resetParas[i].textContent = "";
+          }
+          //div class名は .class名で取得できる
+          //中身はブロック単位でリストのようだ。
+
+          resetButton.parentNode.removeChild(resetButton);
+
+          guessField.disabled = false;
+          guessSubmit.disabled = false;
+          guessField.value = "";
+          guessField.focus();
+
+          lastResult.style.backgroundColor = "White";
+          randomNumber = Math.floor(Math.random()*100) + 1;
+        }
+        //コードの意味や目的も科学と同様に思想に由来する。道具ゆえに。
+        //宗教とは人を超えた自然法則や神の秩序を背景に
+
+
+      // Your JavaScript goes here
+        // let , var で変数定義
+        // const : constantの意味。不変の変数定義に使う。
+        //htmlの<div class="xxx"> 内部のxxxは .xxxで参照できるらしい。CSSも共通
+        //name += " say hello!"　は　name = name + " say hello!"と同じ。連結。
+    </script>
+  </body>
+</html>
